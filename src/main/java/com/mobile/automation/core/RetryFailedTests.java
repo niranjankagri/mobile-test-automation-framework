@@ -1,73 +1,40 @@
 package com.mobile.automation.core;
 
-import org.testng.*;
+import org.testng.IRetryAnalyzer;
+import org.testng.ITestResult;
 
 /**
- * 
- * Any test execution that fails will be re-executed. This class holds the logic
- * to retry a failed test Variable {@link #maxRetryCnt} holds the maximum times
- * a test would be retried
- * 
+ * Runs a failed test once more before it counts as failed.
+ *
+ * TestListener.transform() attaches this analyzer to every test. TestNG creates
+ * one analyzer object per test method, so the counter below is per test: each
+ * test gets at most {@link #maxRetryCnt} extra attempts. The failed attempt is
+ * reported as SKIP, which TestListener cleans up when the retry passes.
+ *
+ * (The older version counted per browser (Chrome/Firefox/Edge) from a "browser"
+ * suite parameter; a mobile suite has none, so every test used the "Chrome"
+ * counter. The behaviour, one retry per failed test, stays the same.)
  */
 public class RetryFailedTests implements IRetryAnalyzer {
 
-    enum Browser {
-        CHROME, FIREFOX, EDGEC,
-    };
-
+    // Extra attempts allowed per test
     private static int maxRetryCnt = 1;
-    private int[] brRetryCount = new int[7];
+    // Attempts used so far by the test this analyzer belongs to
+    private int retryCount = 0;
 
     /**
-     * Re-try running failed tests. Retry happens per browser
-     * 
-     * @param result
-     * @return boolean
+     * Called by TestNG after a failure.
+     *
+     * @param result the failed attempt
+     * @return boolean true to run the test again
      */
     public boolean retry(ITestResult result) {
-        ITestContext iContext = result.getTestContext();
-        String br = getBrowser(iContext);
-        // removeSkippedTest(result);
-        if (br.equalsIgnoreCase("chrome")) {
-            if (brRetryCount[RetryFailedTests.Browser.CHROME.ordinal()] < maxRetryCnt) {
-                brRetryCount[RetryFailedTests.Browser.CHROME.ordinal()]++;
-                System.out.println("Retrying " + result.getName() + " and the count is " + brRetryCount[RetryFailedTests.Browser.CHROME.ordinal()]);
-                return true;
-            }
-
-        } else if (br.equalsIgnoreCase("firefox")) {
-            if (brRetryCount[RetryFailedTests.Browser.FIREFOX.ordinal()] < maxRetryCnt) {
-                brRetryCount[RetryFailedTests.Browser.FIREFOX.ordinal()]++;
-                System.out.println("Retrying " + result.getName() + " and the count is " + brRetryCount[RetryFailedTests.Browser.FIREFOX.ordinal()]);
-                return true;
-            }
-
-        } else if (br.equalsIgnoreCase("edgec")) {
-            if (brRetryCount[RetryFailedTests.Browser.EDGEC.ordinal()] < maxRetryCnt) {
-                brRetryCount[RetryFailedTests.Browser.EDGEC.ordinal()]++;
-                System.out.println("Retrying " + result.getName() + " and the count is " + brRetryCount[RetryFailedTests.Browser.EDGEC.ordinal()]);
-                return true;
-            }
-        } else {
-            System.out.println(" Browser not in enum, not supported");
-            return false;
+        if (retryCount < maxRetryCnt) {
+            retryCount++;
+            System.out.println("Retrying " + result.getName() + " and the count is " + retryCount);
+            return true;
         }
-
         return false;
-    }
-
-    /**
-     * Get browser from ITestContext
-     * 
-     * @param context
-     * @return String
-     */
-    private String getBrowser(ITestContext context) {
-        String browser = "Chrome";
-        if (context.getCurrentXmlTest().getParameter("browser") != null) {
-            browser = context.getCurrentXmlTest().getParameter("browser");
-        }
-        return browser;
     }
 
 }
