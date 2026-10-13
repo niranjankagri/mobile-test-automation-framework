@@ -5,11 +5,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import org.eclipse.jetty.util.StringUtil;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 
-import com.mobile.automation.core.ConfigReader;
 
 import io.appium.java_client.AppiumDriver;
 
@@ -33,19 +31,6 @@ public class BasePage extends DriverActions {
 
     public BasePage(AppiumDriver driver) {
         super(driver);
-    }
-
-    public boolean isLanguage() {
-        if (StringUtil.isNotBlank(ConfigReader.getConfiguration(AppiumConfigs.WEB_LANGUAGE_PROPERTY,
-                AppiumConfigs.WEB_LANGUAGE_DEFAULT_VALUE)))
-            return true;
-        else
-            return false;
-    }
-
-    public String getLanguage() {
-        return ConfigReader.getConfiguration(AppiumConfigs.WEB_LANGUAGE_PROPERTY,
-                AppiumConfigs.WEB_LANGUAGE_DEFAULT_VALUE);
     }
 
     public void loadProperties(String fileName) {

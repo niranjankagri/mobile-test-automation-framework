@@ -60,12 +60,6 @@
 			<artifactId>json</artifactId>
 			<version>20260814</version>
 		</dependency>
-		<!-- StringUtil (BasePage); used to come in through selenium-server -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-util</artifactId>
-			<version>12.1.14</version>
-		</dependency>
 		<!-- File helpers, CSV reading and random test data (Util) -->
 		<dependency>
 			<groupId>commons-io</groupId>

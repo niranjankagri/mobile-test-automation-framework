@@ -115,7 +115,7 @@ public class BaseTestSuite {
      * This is run before any xml test is run and set a thread context with key THREADCONTEXT_ROUTINGKEY
      * and value is from browser param. This is needed despite setting ThreadContext in beforeClass 
      * and beforeMethod to separate logs based on browser happening before test class initialization 
-     * For e.g. some logs in TestListener and ConfigReader are run before test class initialized but we know
+     * For e.g. some logs in TestListener are run before test class initialized but we know
      * already that test class will be initialized for execution in specific browser depending on params in 
      * xml file or jvm args
      * 
