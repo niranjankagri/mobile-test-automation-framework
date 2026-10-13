@@ -48,13 +48,7 @@
 			<artifactId>extentreports</artifactId>
 			<version>2.41.2</version>
 		</dependency>
-		<!-- Full-page screenshots (TestListener) -->
-		<dependency>
-			<groupId>ru.yandex.qatools.ashot</groupId>
-			<artifactId>ashot</artifactId>
-			<version>1.5.4</version>
-		</dependency>
-		<!-- File helpers, CSV reading and random test data (Util) -->
+		<!-- File helpers (Util, TestListener screenshots), CSV reading and random test data (Util) -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
