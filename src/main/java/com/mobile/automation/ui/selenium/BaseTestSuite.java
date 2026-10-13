@@ -17,7 +17,6 @@ import org.testng.annotations.Parameters;
 
 import com.mobile.automation.controller.Platform;
 import com.mobile.automation.controller.PlatformController;
-import com.mobile.automation.util.ReadEmails;
 import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 
@@ -37,7 +36,6 @@ public class BaseTestSuite {
     protected static AppiumDriver driver;
     protected Logger logger = LogManager.getLogger(BaseTestSuite.class.getName());
     protected static final String THREADCONTEXT_ROUTINGKEY = "RoutingKey";
-    protected ReadEmails readEmail = new ReadEmails();
     public static ExtentTest extentTest;
     public static ExtentReports extentReports;
     public static int executedClassCount = 0;

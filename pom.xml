@@ -54,12 +54,6 @@
 			<artifactId>ashot</artifactId>
 			<version>1.5.4</version>
 		</dependency>
-		<!-- Reading emails (ReadEmails); replaces javax.mail:mail 1.4 -->
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>1.6.2</version>
-		</dependency>
 		<!-- JSONObject (BasePage) -->
 		<dependency>
 			<groupId>org.json</groupId>
