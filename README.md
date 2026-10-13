@@ -37,9 +37,25 @@ Download it (for example from APKMirror) and save it as:
 resources/apps/calculator.apk
 ```
 
+## Capabilities
+
+Each platform has its own file, read by `DriverFactory`:
+
+| File | Used by |
+|---|---|
+| `resources/config/android.properties` | `getAndroidInstance()` (UiAutomator2) |
+| `resources/config/ios.properties` | `getIosInstance()` (XCUITest, needs a Mac; not run yet) |
+
+`appium.server.url` is the server; every `capability.<name>` line is one capability
+(`capability.platformVersion=15` is sent as `appium:platformVersion`). Override any key for one run:
+
+```
+mvn test -Dsurefire.suiteXmlFiles=resources/suites/CalculatorTestSuite.xml -Dcapability.deviceName=emulator-5556
+```
+
 ## Run
 
-1. Start an Android emulator (the capabilities expect Android 15, `emulator-5554`).
+1. Start an Android emulator (`android.properties` expects Android 15, `emulator-5554`).
 2. Start the Appium server: `appium` (default address `http://127.0.0.1:4723`).
 3. Run the suite:
 
@@ -52,5 +68,5 @@ Reports: `target/surefire-reports/custom-emailable-report.html` and `test-output
 ## Known limitations (next steps)
 
 - Screenshot on failure uses AShot, which needs JavaScript; it does not work in a native app yet.
-- The iOS driver method is a placeholder and does not start a real iOS session yet.
+- iOS: capabilities are ready in `ios.properties`, but there is no iOS app or page object yet (`IOS.getCalculatorPage()` returns null).
 - The driver and page elements are static, so tests cannot run in parallel yet.

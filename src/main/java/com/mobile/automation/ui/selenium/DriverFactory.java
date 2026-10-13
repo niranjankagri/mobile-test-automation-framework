@@ -11,7 +11,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
-import io.appium.java_client.remote.MobilePlatform;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -50,25 +49,10 @@ public class DriverFactory {
 	 * @throws Exception
 	 */
 	public static AppiumDriver getIosInstance() throws Exception {
-		File f = new File(System.getProperty("user.dir"));
-		File fs = new File(f, "app-debug.apk");
+		// Capabilities and server address come from resources/config/ios.properties
+		Properties config = loadConfig("ios");
 
-		// Capabilities for Android to help set properties for the driver.
-		DesiredCapabilities caps = new DesiredCapabilities();
-
-		caps.setCapability("platformName", MobilePlatform.ANDROID);
-		caps.setCapability("appium:appActivity", "com.example.app.SplashActivity");
-		caps.setCapability("appium:appWaitActivity", "com.example.app.WelcomeActivity");
-		caps.setCapability("appium:platformVersion", "9.0");
-		caps.setCapability("appium:deviceName", "Andorid Emulator");
-		caps.setCapability("appium:automationName", "UiAutomator2");
-		caps.setCapability("appium:app", fs.getAbsolutePath());
-		caps.setCapability("appium:newCommandTimeout", "300");
-		caps.setCapability("appium:autoDismissAlerts", true);
-		caps.setCapability("appium:unicodeKeyboard", true);
-		caps.setCapability("appium:resetKeyboard", true);
-
-		driver = new IOSDriver(new URL("http://127.0.0.1:4723/wd/hub"), caps);
+		driver = new IOSDriver(new URL(config.getProperty(SERVER_URL_KEY)), toCapabilities(config));
 		return driver;
 	}
 

@@ -1,5 +1,7 @@
 # App under test: download it yourself (see README), it is not redistributed here
 resources/apps/*.apk
+resources/apps/*.app/
+resources/apps/*.ipa
 
 # Maven and TestNG output
 target/
