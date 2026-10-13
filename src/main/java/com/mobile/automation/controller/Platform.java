@@ -1,6 +1,6 @@
 package com.mobile.automation.controller;
 
-import com.mobile.automation.pagehelpermethods.android.CalculatorPage;
+import com.mobile.automation.pagehelpermethods.Calculator;
 
 /**
  * What a test can ask for, independent of the operating system.
@@ -13,8 +13,8 @@ import com.mobile.automation.pagehelpermethods.android.CalculatorPage;
 public interface Platform {
 
 	/**
-	 * @return CalculatorPage the calculator screen of the app under test
+	 * @return Calculator the calculator screen of the app under test, with this platform's locators
 	 */
-	CalculatorPage getCalculatorPage();
+	Calculator getCalculatorPage();
 
 }

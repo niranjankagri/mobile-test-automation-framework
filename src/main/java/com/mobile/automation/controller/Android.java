@@ -1,5 +1,6 @@
 package com.mobile.automation.controller;
 
+import com.mobile.automation.pagehelpermethods.Calculator;
 import com.mobile.automation.pagehelpermethods.android.CalculatorPage;
 
 import io.appium.java_client.AppiumDriver;
@@ -23,7 +24,7 @@ public class Android implements Platform {
 	 * A new page object per call, so its elements are looked up on the current screen.
 	 */
 	@Override
-	public CalculatorPage getCalculatorPage() {
+	public Calculator getCalculatorPage() {
 		return new CalculatorPage(driver);
 	}
 

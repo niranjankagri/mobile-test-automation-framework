@@ -1,6 +1,6 @@
 package com.mobile.automation.controller;
 
-import com.mobile.automation.pagehelpermethods.android.CalculatorPage;
+import com.mobile.automation.pagehelpermethods.Calculator;
 
 import io.appium.java_client.AppiumDriver;
 
@@ -28,7 +28,7 @@ public class IOS implements Platform {
 	 * @return null until an iOS page object exists
 	 */
 	@Override
-	public CalculatorPage getCalculatorPage() {
+	public Calculator getCalculatorPage() {
 		return null;
 	}
 

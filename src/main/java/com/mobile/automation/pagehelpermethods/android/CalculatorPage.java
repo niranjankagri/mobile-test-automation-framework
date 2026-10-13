@@ -1,19 +1,20 @@
 package com.mobile.automation.pagehelpermethods.android;
 
 import com.mobile.automation.elementrepository.android.CalculatorPageFactory;
+import com.mobile.automation.pagehelpermethods.Calculator;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.support.PageFactory;
 
 /**
- * Actions on the Google Calculator screen (Android).
+ * Actions on the Google Calculator screen (Android), the Android side of {@link Calculator}.
  *
  * Tests call these methods and never touch locators; the locators are in
  * {@link CalculatorPageFactory}. The clicks go through DriverActions, which waits
  * for the element and logs every step.
  */
-public class CalculatorPage extends CalculatorPageFactory {
+public class CalculatorPage extends CalculatorPageFactory implements Calculator {
 
 	/**
 	 * @param driver the running Android session
