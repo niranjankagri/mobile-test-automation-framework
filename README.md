@@ -63,10 +63,18 @@ mvn test -Dsurefire.suiteXmlFiles=resources/suites/CalculatorTestSuite.xml -Dcap
 mvn test -Dsurefire.suiteXmlFiles=resources/suites/CalculatorTestSuite.xml
 ```
 
-Reports: `target/surefire-reports/custom-emailable-report.html` and `test-output/extent-report.html`.
+Reports and logs:
+
+| Output | What |
+|---|---|
+| `target/surefire-reports/custom-emailable-report.html` | dashboard, per-class and per-method results, stack traces |
+| `test-output/extent-report.html` | Extent report, one entry per test class |
+| `resources/screenshots/<test>.png` | device screen of every failed test |
+| `target/taf-default.log`, `target/android-default.log` | full log, and the framework's lines per platform |
+
+A failed test is retried once (`RetryFailedTests`); only the final attempt counts.
 
 ## Known limitations (next steps)
 
-- Screenshot on failure uses AShot, which needs JavaScript; it does not work in a native app yet.
 - iOS: capabilities are ready in `ios.properties`, but there is no iOS app or page object yet (`IOS.getCalculatorPage()` returns null).
 - The driver and page elements are static, so tests cannot run in parallel yet.
