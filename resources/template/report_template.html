@@ -3,14 +3,16 @@
   Template of the custom emailable report. TestListener.generateReport() reads this file,
   replaces the placeholders and writes target/surefire-reports/custom-emailable-report.html.
 
-  Placeholders (filled by TestListener):
-    $SUITE_START_TIME$, $START_TIME$, $END_TIME$, $EXECUTION_TIME$   dashboard times
-    $USERNAME$, $OS$, $JAVA-VERSION$, $HOST-NAME$                     environment table
-    $TOTAL_TEST$, $TOTAL_PASSED$, $TOTAL_SKIPPED$, $TOTAL_FAILED$     totals and pie chart
-    $SUITE-ANALYSIS$   table: one row per test class (counts, platform, time)
-    $TEST_ANALYSIS$    left menu: one entry per test class with a pass/fail badge
-    METHOD_ANALYSIS    right side: per class, one row per test method; failures with
-                       screenshot (click to enlarge) and stack trace
+  Placeholders filled by TestListener. They are written here WITHOUT their $ signs and
+  with "-" instead of "_" in METHOD-ANALYSIS, because every exact occurrence in this file
+  is replaced, including inside this comment:
+    SUITE_START_TIME, START_TIME, END_TIME, EXECUTION_TIME   dashboard times
+    USERNAME, OS, JAVA-VERSION, HOST-NAME                     environment table
+    TOTAL_TEST, TOTAL_PASSED, TOTAL_SKIPPED, TOTAL_FAILED     totals and pie chart
+    SUITE-ANALYSIS   table: one row per test class (counts, platform, time)
+    TEST_ANALYSIS    left menu: one entry per test class with a pass/fail badge
+    METHOD-ANALYSIS  right side (bare word, no $): per class, one row per test method;
+                     failures with screenshot (click to enlarge) and stack trace
 
   Two views, switched in the top menu: "Test Details" (dashboard + pie chart + class table)
   and "Analysis" (per-class method results). Styles and the pie chart come from CDNs, so
