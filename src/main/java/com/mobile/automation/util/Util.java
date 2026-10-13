@@ -25,7 +25,7 @@ import com.opencsv.CSVReaderBuilder;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Utility class
+ * Static helpers without a driver: waits, random test data, dates, OS type, files and CSV.
  */
 public class Util {
 
@@ -34,26 +34,26 @@ public class Util {
 	/**
 	 * Enum to hold the various OSType
 	 */
-	public enum OsType {	    
+	public enum OsType {
     	WINDOWS,
 	    MACOS,
 	   	OTHER
 	}
-	
+
 	/** The faker for fake data generation*/
     private static Faker faker = new Faker();
 
-    /** 
-     * 
-     * Variables used as input to sleep functions, OR for various UI functions 
-     * Example : sleep(S_MS_WAIT)  OR {@link DriverActions#waitForElementPresent(String)}
-     * 
-     * **/
-    
+    /**
+     * Standard durations in seconds: *_WAIT for {@link #sleepInSec(int)}, *_TIMEOUT for
+     * waits such as {@link DriverActions#isElementPresent(String, int)}. Prefer a wait for a
+     * condition over a fixed sleep.
+     */
+	// Fixed pauses (seconds)
 	public static int S_WAIT = 1;
 	public static int M_WAIT = 3;
 	public static int L_WAIT = 5;
-	
+
+	// Upper limits for waits (seconds)
 	public static int S_TIMEOUT = 5;
 	public static int M_TIMEOUT = 10;
 	public static int L_TIMEOUT = 20;
@@ -62,7 +62,7 @@ public class Util {
 
     /**
      * Sleep for the mentioned time in seconds
-     * 
+     *
      * @param timeInSecond
      * @param info - any message that needs to be displayed while sleeping
      */
@@ -73,21 +73,22 @@ public class Util {
         }
 
         try {
-            Thread.sleep(timeInSecond * 1000);
+            Thread.sleep(timeInSecond * 1000L);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // Keep the interrupt flag, so TestNG can still stop the thread
+            Thread.currentThread().interrupt();
         }
     }
-	
+
 	/**
 	 * Sleep for the mentioned time in seconds
-	 * 
+	 *
 	 * @param timeInSecond
 	 */
 	public static void sleepInSec(int timeInSecond) {
 	    sleepInSec(timeInSecond, null);
 	}
-	   
+
     /**
      * Gets an alpha numeric string of mentioned length
      *
@@ -95,56 +96,56 @@ public class Util {
      * @return the alpha numeric string
      */
     public static String getAlphaNumeric(int len) {
-		final String ALPHA_NUM =  
-			"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";  
-		StringBuffer sb = new StringBuffer(len);  
-		for (int i=0;  i<len;  i++) {  
-			int ndx = (int)(Math.random()*ALPHA_NUM.length());  
-			sb.append(ALPHA_NUM.charAt(ndx));  
-		}  
-		return sb.toString();  
-   }  
-    
+		final String ALPHA_NUM =
+			"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		StringBuffer sb = new StringBuffer(len);
+		for (int i=0;  i<len;  i++) {
+			int ndx = (int)(Math.random()*ALPHA_NUM.length());
+			sb.append(ALPHA_NUM.charAt(ndx));
+		}
+		return sb.toString();
+   }
+
     /**
-     * Gets an alpha string of mentioned length
+     * Gets an upper-case letter string of mentioned length
      *
      * @param len - desired length
-     * @return the alpha numeric string
+     * @return the letters
      */
     public static String getAlpha(int len) {
-        final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";  
-        StringBuffer sb = new StringBuffer(len);  
-        for (int i=0;  i<len;  i++) {  
-            int ndx = (int)(Math.random()*ALPHA.length());  
-            sb.append(ALPHA.charAt(ndx));  
-        }  
-        return sb.toString();  
-   }  
-    
+        final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuffer sb = new StringBuffer(len);
+        for (int i=0;  i<len;  i++) {
+            int ndx = (int)(Math.random()*ALPHA.length());
+            sb.append(ALPHA.charAt(ndx));
+        }
+        return sb.toString();
+   }
+
     /**
-     * Get Unique name of a particular count
+     * Random lower-case word of letters and digits, starting with "z"
      *
-     * @param charCount - desired char count
-     * @return the unique name
+     * @param charCount - number of random characters after the "z"
+     * @return the word
      */
     public static String getUniqueWord(int charCount) {
     	String name = "z"+getAlphaNumeric(charCount).toLowerCase();
     	logger.info("Constructed Name :"+ name);
     	return name;
     }
-    
+
     /**
-     * Get Unique name of a particular count
+     * Random lower-case name of letters only, starting with "z"
      *
-     * @param charCount - desired char count
-     * @return the unique name
+     * @param charCount - number of random letters after the "z"
+     * @return the name
      */
     public static String getUniqueName(int charCount) {
         String name = "z"+getAlpha(charCount).toLowerCase();
         logger.info("Constructed Name :"+ name);
         return name;
     }
-    
+
     /**
      * Gets the unique name with character count 10
      *
@@ -153,54 +154,54 @@ public class Util {
     public static String getUniqueName() {
         return getUniqueName(10);
     }
-    
+
     /**
-     * Gets the unique name with character count 10
+     * Gets the unique word with character count 10
      *
-     * @return the unique name
+     * @return the unique word
      */
     public static String getUniqueWord() {
         return getUniqueWord(10);
     }
-    
+
     /**
-     * Gets a Random Number b/w 1 and 10.
+     * Gets a random 10-digit number as text.
      *
-     * @return the random number
+     * @return the digits
      */
     public static String getRandomNumber() {
   	  return getRandomNumber(10);
     }
-    
+
     /**
-     * Gets Unique Random Number within a given range.
+     * Gets a random number with the given number of digits, as text (may start with 0).
      *
-     * @param min - the min
-     * @param max - the max
-     * @return the random number
+     * @param len - number of digits
+     * @return the digits
      */
     public static String getRandomNumber(int len) {
-        final String NUMERIC = "0123456789";  
-        StringBuffer sb = new StringBuffer(len);  
-        for (int i=0;  i<len;  i++) {  
-            int ndx = (int)(Math.random()*NUMERIC.length());  
-            sb.append(NUMERIC.charAt(ndx));  
-        }  
+        final String NUMERIC = "0123456789";
+        StringBuffer sb = new StringBuffer(len);
+        for (int i=0;  i<len;  i++) {
+            int ndx = (int)(Math.random()*NUMERIC.length());
+            sb.append(NUMERIC.charAt(ndx));
+        }
         return sb.toString();
     }
 
-    
+
     /**
-     * GetRandom Email Address.
+     * Makes a unique Gmail address from an existing one with a "+tag"
+     * (name@gmail.com becomes name+zabc...@gmail.com; mails still reach name@gmail.com).
      *
-     * @param emailAccount the email account. Example : {@link TafWebAppConstants#GMAIL_EMAIL_USER_NAME
-     * @return the string
+     * @param email a Gmail address
+     * @return the unique address
      */
     public static String generateUniqueEmail(String email) {
         String generatedEmail = email.replace("@gmail.com", "+"  + getUniqueName() + "@gmail.com");
         return generatedEmail;
     }
-   
+
    /**
     * Returns String list of given Strings.
     *
@@ -210,14 +211,14 @@ public class Util {
    public static List<String> buildListOfStrings(String... items){
 	   List<String> list = new ArrayList<String>();
 	   for (String item : items){
-		   list.add(item);		   
+		   list.add(item);
 	   }
 	   return list;
    }
 
    /**
     * Increment days to current date
-    * 
+    *
     * @param incrementDays - number of days to increment
     * @return Date - the new date
     */
@@ -225,12 +226,12 @@ public class Util {
 		LocalDate newDate = LocalDate.now().plusDays(incrementDays);
 		return Date.from(newDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 	}
-	
-	/**
-     * Decrement days to current date
-     * 
-     * @param incrementDays - number of days to increment
-     * @return Date - the new date
+
+    /**
+     * Subtract days from the current date
+     *
+     * @param decrementDays - number of days to go back
+     * @return Date - the new date, at the start of the day
      */
      public static Date decrementDateByDays(int decrementDays) {
          LocalDate newDate = LocalDate.now().minusDays(decrementDays);
@@ -239,7 +240,7 @@ public class Util {
 
 	/**
     * get current time stamp
-    * 
+    *
     * @return time
     */
 	public static LocalDateTime getCurrentTimeStamp() {
@@ -248,14 +249,14 @@ public class Util {
 	}
 
 	/**
-	 * Ge Unique name with time.
+	 * Unique name from a random word and the current nano time.
 	 *
 	 * @return the unique name with time
 	 */
 	public static String getUniqueNameWithTime() {
         return "z" + faker.lorem().word() + "_" + String.valueOf(System.nanoTime());
     }
-	
+
     /**
      * Gets the OS type.
      *
@@ -271,7 +272,7 @@ public class Util {
             return OsType.OTHER;
         }
     }
-    
+
     /**
      * Generates a random word
      *
@@ -280,24 +281,24 @@ public class Util {
     public static String getRandomWord() {
     	return String.valueOf(faker.lorem().word());
     }
-    
+
     /**
      * Delete file
      *
      * @param filePath - the file path
      */
-    public static void deleteFile(String filePath) { 
+    public static void deleteFile(String filePath) {
         try {
-            if(Files.deleteIfExists(Paths.get(filePath))) { 
-                logger.info("File deleted successfully"); 
-            } else { 
-                logger.info("Failed to delete the file"); 
+            if(Files.deleteIfExists(Paths.get(filePath))) {
+                logger.info("File deleted: " + filePath);
+            } else {
+                logger.info("Nothing to delete: " + filePath);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        } 
+            logger.error("Could not delete " + filePath, e);
+        }
     }
-    
+
     /**
      * Delete file from downloads folder of the system
      * @param fileName
@@ -305,28 +306,26 @@ public class Util {
     public static void deleteFileFromDownloads(String fileName) {
         deleteFile(System.getProperty("user.home") + "/Downloads/"+fileName);
     }
-    
+
     /**
-     * Read CSV file
+     * Read a semicolon-separated CSV file
      *
      * @param filePath - the file path
-     * @return List<String[]> - file data in list format
+     * @return List&lt;String[]&gt; - one array per row; empty when the file cannot be read
      */
     public static List<String[]> readCSVFile(String filePath) {
         List<String[]> csvFileData = new ArrayList<>();
-        try {
-            FileReader filereader = new FileReader(filePath);
-            CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
-            CSVReader csvReader = new CSVReaderBuilder(filereader) 
-                    .withCSVParser(parser) 
-                    .build(); 
+        // Semicolon-separated, as exported by Excel in many European locales
+        CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
+        // try-with-resources closes the file even when parsing fails
+        try (CSVReader csvReader = new CSVReaderBuilder(new FileReader(filePath)).withCSVParser(parser).build()) {
             csvFileData = csvReader.readAll();
         } catch (Exception e) {
-            e.printStackTrace();
-        } 
+            logger.error("Could not read CSV " + filePath, e);
+        }
         return csvFileData;
     }
-    
+
     /**
      * Is CSV file contains the given data
      *
@@ -337,26 +336,31 @@ public class Util {
     public static boolean isCSVFileContainData(String filePath, String data) {
         boolean isCSVFileContainData = false;
         List<String[]> csvFileData = readCSVFile(filePath);
-        for (String[] row : csvFileData) { 
-            for (String cell : row) { 
+        for (String[] row : csvFileData) {
+            for (String cell : row) {
                 if(cell.contains(data)){
                     isCSVFileContainData = true;
                     break;
                 }
-            } 
-        } 
+            }
+        }
         return isCSVFileContainData;
     }
-    
+
     /**
-     * Check our specific file is exist or not in directorys.
-     * @param directoryPath
-     * @param fileName
-     * @return
+     * Checks whether a folder contains a file with exactly this name.
+     *
+     * @param directoryPath the folder
+     * @param fileName      the file name
+     * @return true when the file is there (false also when the folder does not exist)
      */
      public static boolean checkFilesExist(String directoryPath, String fileName )  {
         File files = new File(directoryPath);
         String[] listOfFiles=files.list();
+        // list() returns null when the folder does not exist
+        if (listOfFiles == null) {
+            return false;
+        }
         // For each name in the path array
         boolean flag=false;
         for (int i = 0; i < listOfFiles.length; i++) {
@@ -367,50 +371,55 @@ public class Util {
         }
         return flag;
      }
-     
+
      /**
-      * Send file name and path to checkFileExist method
-      * @param fileName
-      * @return
+      * Checks whether the user's Downloads folder contains the file.
+      *
+      * @param fileName the file name
+      * @return true when the file is there
       */
       public static boolean checkDownloadFilesExist(String fileName) {
           return checkFilesExist(System.getProperty("user.home") + "/Downloads", fileName);
       }
-      
+
       /**
        * Get the count of files from the directory path.
        *
        * @param directoryPath - the directory path
-       * @return integer - the number of files
+       * @return integer - the number of files (0 when the folder does not exist)
        */
       public static int getFilesCount(String directoryPath) {
-          File files = new File(directoryPath);
-          return files.list().length;
+          String[] listOfFiles = new File(directoryPath).list();
+          // list() returns null when the folder does not exist
+          return listOfFiles == null ? 0 : listOfFiles.length;
       }
-      
+
       /**
        * Get the count of files in the users Downloads folder
-       * 
+       *
        *  @return integer
        */
       public static int getDownloadFilesCount() {
           return getFilesCount(System.getProperty("user.home") + "/Downloads");
       }
-      
+
       /**
-       * Check our specific file is exist or not in directorys.
-       * @param directoryPath
-       * @param fileName
-       * @return
+       * Deletes every file directly inside a folder (TestListener empties the screenshot folder).
+       *
+       * @param folderPath the folder
+       * @return true when the folder existed and was emptied, false when it does not exist
        */
        public static boolean deleteAllFilesFromFolder(String folderPath)  {
-          File files = new File(folderPath);
-          String[] listOfFiles=files.list();
-          // For each name in the path array
-          boolean flag=false;
-          for (int i = 0; i < listOfFiles.length; i++) {
-              deleteFile(System.getProperty("user.dir") + "/resources/screenshots/" + listOfFiles[i]);
+          File folder = new File(folderPath);
+          String[] listOfFiles = folder.list();
+          // list() returns null when the folder does not exist, e.g. on a fresh CI checkout
+          if (listOfFiles == null) {
+              return false;
           }
-          return flag;
+          for (String fileName : listOfFiles) {
+              // Delete inside the given folder (it used to always use resources/screenshots)
+              deleteFile(new File(folder, fileName).getPath());
+          }
+          return true;
        }
 }
