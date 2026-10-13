@@ -15,11 +15,15 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * WebDriver related functions to start various driverss
+ * Starts the Appium session for a platform. Called by BaseTestSuite.setUp().
  *
+ * Nothing about devices, apps or the server is hard-coded here: each platform has
+ * its own file in resources/config (android.properties, ios.properties) with the
+ * server URL and one "capability.&lt;name&gt;" line per capability.
  */
 public class DriverFactory {
 	private static Logger logger = LogManager.getLogger(DriverFactory.class.getName());
+	// The last session started; BaseTestSuite keeps its own reference for the tests
 	protected static AppiumDriver driver;
 
 	// One capabilities file per platform, e.g. resources/config/android.properties
@@ -28,10 +32,10 @@ public class DriverFactory {
 	private static final String CAPABILITY_PREFIX = "capability.";
 
 	/**
-	 * Get Android Driver
+	 * Starts an Android (UiAutomator2) session from android.properties.
 	 *
-	 * @return AndroidDriver
-	 * @throws Exception
+	 * @return AppiumDriver the running Android session
+	 * @throws Exception when the file is missing or the server cannot create the session
 	 */
 	public static AppiumDriver getAndroidInstance() throws Exception {
 		// Capabilities and server address come from resources/config/android.properties
@@ -43,10 +47,10 @@ public class DriverFactory {
 	}
 
 	/**
-	 * Get IOS Driver
+	 * Starts an iOS (XCUITest) session from ios.properties. Needs a Mac with Xcode.
 	 *
-	 * @return IOSDriver
-	 * @throws Exception
+	 * @return AppiumDriver the running iOS session
+	 * @throws Exception when the file is missing or the server cannot create the session
 	 */
 	public static AppiumDriver getIosInstance() throws Exception {
 		// Capabilities and server address come from resources/config/ios.properties
