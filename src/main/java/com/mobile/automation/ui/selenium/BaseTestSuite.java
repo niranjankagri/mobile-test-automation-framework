@@ -1,11 +1,8 @@
 package com.mobile.automation.ui.selenium;
 
-import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
@@ -23,103 +20,111 @@ import com.relevantcodes.extentreports.ExtentTest;
 import io.appium.java_client.AppiumDriver;
 
 /**
- * This function defines the core selenium actions, 
- * 		@BeforeClass - Before every class, creating a new webDriver instance
- * 		@AfterClass -  Quit the WebDriver when the test is completed. 
- * 
- * All the respective webPage related classes (which contain the functions specific to that particular webPage) are also initiated here, in the setUp function
- * 
- * This class needs to be extended, for every new automation testClass
+ * Base class of every test class: the life cycle of the Appium session and the reports.
  *
+ * Flow per test class:
+ * <ol>
+ * <li>{@link #setUp(String)} starts the session for the suite's "platform" parameter
+ *     (DriverFactory) and sets {@link #app} to the matching {@link Platform}.</li>
+ * <li>The tests use {@code app.getXxxPage()} and never create drivers themselves.</li>
+ * <li>{@link #tearDown()} ends the session, even when a test failed.</li>
+ * </ol>
+ * The Extent report is opened once per suite and gets one entry per test class.
+ * The log4j ThreadContext key "RoutingKey" carries the platform name, so log lines
+ * can be told apart per platform.
  */
 public class BaseTestSuite {
     protected static AppiumDriver driver;
     protected Logger logger = LogManager.getLogger(BaseTestSuite.class.getName());
     protected static final String THREADCONTEXT_ROUTINGKEY = "RoutingKey";
+    // Read by TestListener to log PASS/FAIL/SKIP into the current class's report entry
     public static ExtentTest extentTest;
     public static ExtentReports extentReports;
-    public static int executedClassCount = 0;
+    // Entry point for tests: the page objects of the platform under test
     public static Platform app;
-    
+
 	/**
-	 * Create an instance of webdriver and initiate all page
-	 * 
-	 * @param platform
-	 * @param locale
-	 * @throws Exception
+	 * Starts the Appium session for the platform and picks its page objects.
+	 *
+	 * @param platform "Android" or "iOS", from the TestNG suite file
+	 * @throws Exception when the session cannot be created (no server, device or app)
 	 */
 	@Parameters({"platform"})
 	@BeforeClass (alwaysRun = true)
 	public void setUp(String platform) throws Exception{
-		/**
-		 * this sets ThreadContext map with key THREADCONTEXT_ROUTINGKEY and value from browser param.
-	    this is needed despite setting ThreadContext in beforeTest and beforeMethod. When classes are run 
-	    parallel, thread pool executing classes in parallel does not inherit ThreadContext set in beforeTest 
-	    at test initialization. Log messages coming from other beforeClass methods such as login and 
-	    feature flip needs to separated based on browser as well. 
-		 */
+		// Set here too: when classes run in parallel, their threads do not inherit the
+		// ThreadContext set in @BeforeTest, and the log lines of this method need the platform
 	    ThreadContext.put(THREADCONTEXT_ROUTINGKEY, platform.toLowerCase());
 	    if (platform.equalsIgnoreCase("android")) {
 			driver = DriverFactory.getAndroidInstance();
-			logger.info("WEBDRIVER IS STARTING ON REMOTE SESSION");
+			logger.info("Started the Android session");
 		} else if (platform.equalsIgnoreCase("ios")) {
-			driver      = DriverFactory.getIosInstance();
-			logger.info("WEBDRIVER IS STARTING ON LOCAL SESSION");
+			driver = DriverFactory.getIosInstance();
+			logger.info("Started the iOS session");
+		} else {
+			throw new IllegalArgumentException("Unknown platform '" + platform + "', expected Android or iOS");
 		}
-	    
+
 	    PlatformController controller = new PlatformController(driver);
 	    app = controller.getPlatform(platform);
 	}
-	
+
+	/**
+	 * Opens the Extent report once for the whole suite.
+	 */
 	@BeforeSuite
 	public void beforeSuiteSetUp() {
         extentReports = new ExtentReports(System.getProperty("user.dir") +"/test-output/extent-report.html");
     }
-	
+
+	/**
+	 * Starts one report entry per test class, named after the class.
+	 */
 	@BeforeClass
-    public void beforeClassSetUp(ITestContext context) {
-	    extentTest = extentReports.startTest(context.getCurrentXmlTest().getClasses().stream().map(e -> e.getName()).collect(Collectors.toList()).get(executedClassCount));
-	    executedClassCount++;
+    public void beforeClassSetUp() {
+	    // 'this' is the running test class, so its name is always the right one
+	    extentTest = extentReports.startTest(getClass().getSimpleName());
     }
-	
+
+	/**
+	 * Writes the Extent report to disk at the end of the suite.
+	 */
 	@AfterSuite
 	public void afterSuiteSetUp() {
-        extentReports.endTest(extentTest);
         extentReports.flush();
     }
 
     /**
-	 * Closes the current Session
+	 * Ends the current Appium session (a native app has no window to close).
 	 */
 	protected void quitSession() {
-		driver.close();
+		driver.quit();
 	}
-	
+
 	/**
-	 * Quit the driver, once the tests are completed
+	 * Closes this class's report entry and ends the session, even after a failure.
 	 */
 	@AfterClass	(alwaysRun = true)
 	public void tearDown() {
 		try {
-			if (driver != null) 
-			driver.quit();
+			if (extentReports != null && extentTest != null) {
+				extentReports.endTest(extentTest);
+			}
+			if (driver != null) {
+				driver.quit();
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Could not end the session cleanly", e);
 		} finally {
 		    ThreadContext.clearMap();
         }
-		
 	}
-	
+
     /**
-     * This is run before any xml test is run and set a thread context with key THREADCONTEXT_ROUTINGKEY
-     * and value is from browser param. This is needed despite setting ThreadContext in beforeClass 
-     * and beforeMethod to separate logs based on browser happening before test class initialization 
-     * For e.g. some logs in TestListener are run before test class initialized but we know
-     * already that test class will be initialized for execution in specific browser depending on params in 
-     * xml file or jvm args
-     * 
-     * @param browser
+     * Sets the platform as log RoutingKey before the &lt;test&gt; starts, so log lines
+     * written before any test class exists (e.g. by TestListener) carry it too.
+     *
+     * @param platform "Android" or "iOS", from the TestNG suite file
      */
     @BeforeTest(alwaysRun = true)
     @Parameters({ "platform" })
@@ -128,20 +133,18 @@ public class BaseTestSuite {
     }
 
     /**
-     * This clears the ThreadContextMap
+     * Clears the log ThreadContext after the &lt;test&gt;.
      */
     @AfterTest(alwaysRun = true)
     public void afterTestThreadContextCleanup() {
         ThreadContext.clearMap();
     }
-    
+
     /**
-     * This is run before any test method is run and set a thread context with key THREADCONTEXT_ROUTINGKEY
-     * and value is from browser param. This is needed despite of setting ThreadContext in beforeClass and
-     * beforeTest. When methods are run parallel (instead of class or tests) then the threadpool executing 
-     * methods in parallel does not have/inherit the context map of parent thread. Hence each method
-     * 
-     * @param browser
+     * Sets the platform as log RoutingKey before each test method: with parallel
+     * methods, the worker threads do not inherit the parent thread's ThreadContext.
+     *
+     * @param platform "Android" or "iOS", from the TestNG suite file
      */
     @BeforeMethod(alwaysRun = true)
     @Parameters({ "platform" })
@@ -149,6 +152,9 @@ public class BaseTestSuite {
         ThreadContext.put(THREADCONTEXT_ROUTINGKEY, platform.toLowerCase());
     }
 
+    /**
+     * @return AppiumDriver the running session (used by TestListener for screenshots)
+     */
     public static AppiumDriver getDriver() {
         return driver;
     }
