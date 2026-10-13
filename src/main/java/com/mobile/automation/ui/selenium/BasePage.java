@@ -1,61 +1,61 @@
 package com.mobile.automation.ui.selenium;
 
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
-
 
 import io.appium.java_client.AppiumDriver;
 
 /**
- * This class is the base page for all the web page classes All the common
- * functions that can be used across all web pages are defined here. Example -
- * enableFeatureFlip When a new pageClass is created, please extend this class
- * 
- * For more webPage specific functions, please visit the respective Page classes
- * in the package - com.mobile.automation.pagehelpermethods For more functions
- * to perform UI actions, please go to {@link DriverActions}
- * 
+ * Base class of every page object (through its element repository class).
+ *
+ * Inherits all element actions (click, type, waits, getText ...) from
+ * {@link DriverActions} and adds test-data helpers that any screen can use.
+ * Screen-specific actions belong in the page classes in
+ * com.mobile.automation.pagehelpermethods.
  */
 public class BasePage extends DriverActions {
 
+    // Test data loaded by loadProperties()
     protected Properties properties = new Properties();
-    private InputStream fileInputStream;
-    protected FileReader fileReader;
-    protected JSONObject json;
-    int value = 0;
 
+    /**
+     * @param driver the running session
+     */
     public BasePage(AppiumDriver driver) {
         super(driver);
     }
 
+    /**
+     * Loads resources/testfiles/&lt;fileName&gt;.properties into {@link #properties}.
+     * A missing file is logged, not thrown, so a page can still be used without it.
+     *
+     * @param fileName file name without the .properties extension
+     */
     public void loadProperties(String fileName) {
-        try {
-            fileInputStream = new FileInputStream(
-                    System.getProperty("user.dir") + "//resources//TestFiles//" + fileName + ".properties");
-            properties.load(fileInputStream);
+        String path = System.getProperty("user.dir") + "/resources/testfiles/" + fileName + ".properties";
+        // try-with-resources closes the file as soon as it is read
+        try (InputStream in = new FileInputStream(path)) {
+            properties.load(in);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.error("Could not load test data " + path, ex);
         }
     }
 
+    /**
+     * @param key a key of the loaded test data
+     * @return String its value, or null when the key is not there
+     */
     public String getKeyValue(String key) {
         return properties.getProperty(key);
     }
 
+    /**
+     * Kept for existing callers: loadProperties() now closes the file itself,
+     * so there is nothing left to close.
+     */
     public void closeProperties() {
-
-        if (fileInputStream != null) {
-            try {
-                fileInputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }

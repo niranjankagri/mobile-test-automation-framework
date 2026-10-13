@@ -54,12 +54,6 @@
 			<artifactId>ashot</artifactId>
 			<version>1.5.4</version>
 		</dependency>
-		<!-- JSONObject (BasePage) -->
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20260814</version>
-		</dependency>
 		<!-- File helpers, CSV reading and random test data (Util) -->
 		<dependency>
 			<groupId>commons-io</groupId>
