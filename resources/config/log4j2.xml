@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Logging for the framework. TestListener points log4j to this file before the first test.
+  Every line shows the time, thread, the platform (ctx = ThreadContext "RoutingKey",
+  set by BaseTestSuite from the suite's "platform" parameter), level, class and message.
+
+  Output:
+  - console and target/taf-default.log: everything
+  - target/android-default.log, target/ios-default.log: the framework's own lines,
+    split by platform (useful when Android and iOS run in one suite)
+-->
 <Configuration status="WARN">
     <Appenders>
         <Console name="ConsoleAppender" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
         </Console>
+        <!-- Rewritten on every run -->
         <File name="FileAppender" fileName="target/taf-default.log" append="false">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
         </File>
+        <!-- One file per platform, chosen by the RoutingKey of the current thread -->
         <Routing name="RoutingAppender">
             <Routes pattern="$${ctx:RoutingKey}">
-                <Route key="firefox">
-                    <File name="$${ctx:RoutingKey}-DefaultAppender" fileName="target/${ctx:RoutingKey}-default.log">
+                <Route key="android">
+                    <File name="android-DefaultAppender" fileName="target/android-default.log" append="false">
                         <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
                     </File>
                 </Route>
-                <Route key="chrome">
-                    <File name="$${ctx:RoutingKey}-DefaultAppender" fileName="target/${ctx:RoutingKey}-default.log">
-                        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
-                    </File>
-                </Route>
-                <Route key="ie">
-                    <File name="$${ctx:RoutingKey}-DefaultAppender" fileName="target/${ctx:RoutingKey}-default.log">
-                        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
-                    </File>
-                </Route>
-                <Route key="edge">
-                    <File name="$${ctx:RoutingKey}-DefaultAppender" fileName="target/${ctx:RoutingKey}-default.log">
+                <Route key="ios">
+                    <File name="ios-DefaultAppender" fileName="target/ios-default.log" append="false">
                         <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
                     </File>
                 </Route>
@@ -37,12 +39,9 @@
             <AppenderRef ref="ConsoleAppender" />
             <AppenderRef ref="FileAppender" />
         </Root>
-        <Logger name="com.example" level="DEBUG">
+        <!-- The framework's classes also go to the per-platform file (and, by additivity, to the root) -->
+        <Logger name="com.mobile.automation" level="DEBUG">
             <AppenderRef ref="RoutingAppender" />
-        </Logger>
-        <Logger name="com.example.androidui" level="DEBUG" additivity="false">
-            <AppenderRef ref="ConsoleAppender" />
-            <AppenderRef ref="FileAppender" />
         </Logger>
     </Loggers>
 </Configuration>

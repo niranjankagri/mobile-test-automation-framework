@@ -1,13 +1,21 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<!--
+  Calculator suite. Run:
+    mvn test -Dsurefire.suiteXmlFiles=resources/suites/CalculatorTestSuite.xml
+  Needs a running Appium server and the device from resources/config/android.properties.
+-->
 <suite name="CalculatorTest">
+    <!-- Logs results, takes failure screenshots, adds the retry analyzer and writes
+         target/surefire-reports/custom-emailable-report.html -->
     <listeners>
         <listener class-name="com.mobile.automation.ui.selenium.TestListener" />
     </listeners>
-    
+
     <test name="CalculatorTest" preserve-order="true">
-    <parameter name="platform" value="Android" />
+        <!-- Read by BaseTestSuite: Android or iOS decides the session and the page objects -->
+        <parameter name="platform" value="Android" />
         <classes>
-			<class name="com.mobile.automation.tests.CalculatorTest" />
-		</classes>
+            <class name="com.mobile.automation.tests.CalculatorTest" />
+        </classes>
     </test>
 </suite>
