@@ -17,11 +17,12 @@ upgraded in 2026 to current versions. Work in progress: the framework is being e
 ## Design
 
 ```
-CalculatorTestSuite.xml  (platform = Android)
-  -> BaseTestSuite        starts the driver (DriverFactory) and picks the platform
+CalculatorTestSuite.xml (platform = Android) / CalculatorTestSuite-iOS.xml (platform = iOS)
+  -> BaseTestSuite        starts the driver (DriverFactory, <platform>.properties) and picks the platform
   -> PlatformController   returns Android or IOS, both implement Platform
-  -> CalculatorPage       page actions (pagehelpermethods)
-  -> CalculatorPageFactory  locators only (elementrepository, @AndroidFindBy)
+  -> Calculator           what tests call; one implementation per platform:
+       pagehelpermethods/android/CalculatorPage   -> elementrepository/android (@AndroidFindBy)
+       pagehelpermethods/ios/CalculatorPage       -> elementrepository/ios (@iOSXCUITFindBy)
   -> DriverActions / BasePage  shared waits and element actions
 TestListener: custom HTML report, retry of failed tests (RetryFailedTests), Extent report
 ```
@@ -44,7 +45,7 @@ Each platform has its own file, read by `DriverFactory`:
 | File | Used by |
 |---|---|
 | `resources/config/android.properties` | `getAndroidInstance()` (UiAutomator2) |
-| `resources/config/ios.properties` | `getIosInstance()` (XCUITest, needs a Mac; not run yet) |
+| `resources/config/ios.properties` | `getIosInstance()` (XCUITest, needs a Mac; not run yet; simulator and real-device settings explained in the file) |
 
 `appium.server.url` is the server; every `capability.<name>` line is one capability
 (`capability.platformVersion=15` is sent as `appium:platformVersion`). Override any key for one run:
@@ -74,6 +75,27 @@ Reports and logs:
 
 A failed test is retried once (`RetryFailedTests`); only the final attempt counts.
 
+## Run on iOS (Mac only)
+
+The same `CalculatorTest` runs on iOS; only the platform parameter differs.
+iOS page objects: `elementrepository/ios/CalculatorPageFactory` (locators) and
+`pagehelpermethods/ios/CalculatorPage` (actions), both behind the `Calculator` interface.
+
+1. Install Xcode, open it once, accept the licence and install a simulator runtime.
+2. `appium driver install xcuitest`
+3. Put the app in `resources/apps` (`.app` for the simulator, `.ipa` for a device) and set
+   `capability.app`, `platformVersion` and `deviceName` in `ios.properties`
+   (`xcrun simctl list devices` lists the simulators).
+4. Check the locators with Appium Inspector: the iOS ids in the repo are examples and
+   have not been run yet.
+5. `appium`, then:
+
+```
+mvn test -Dsurefire.suiteXmlFiles=resources/suites/CalculatorTestSuite-iOS.xml
+```
+
+The first run builds WebDriverAgent onto the simulator and takes a few minutes.
+
 ## Report demo (a failure and a skip on purpose)
 
 `ReportDemoTest` has one test that fails on purpose (2 + 4 checked against 7) and one that is
@@ -89,5 +111,5 @@ retried once first. Then open `target/surefire-reports/custom-emailable-report.h
 
 ## Known limitations (next steps)
 
-- iOS: capabilities are ready in `ios.properties`, but there is no iOS app or page object yet (`IOS.getCalculatorPage()` returns null).
+- iOS: session settings, page objects and suite are in place, but nothing has run on iOS yet (needs a Mac); the iOS locators are examples.
 - The driver and page elements are static, so tests cannot run in parallel yet.

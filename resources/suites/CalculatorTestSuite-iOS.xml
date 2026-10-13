@@ -1,0 +1,30 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<!--
+  Calculator suite on iOS: the same CalculatorTest as on Android, only the platform differs.
+  BaseTestSuite reads platform=iOS, DriverFactory starts the session from
+  resources/config/ios.properties, and IOS.getCalculatorPage() hands out the iOS page objects.
+
+  How to run (on a Mac only, iOS automation needs Xcode):
+    1. Install Xcode, open it once and accept the licence; install a simulator runtime.
+    2. appium driver install xcuitest
+    3. Put the app under test in resources/apps (simulator build: .app, device build: .ipa)
+       and set capability.app, platformVersion and deviceName in ios.properties
+       (xcrun simctl list devices shows the simulators you have).
+    4. Check the locators in elementrepository/ios/CalculatorPageFactory with Appium Inspector.
+    5. Start the server: appium
+    6. mvn test -Dsurefire.suiteXmlFiles=resources/suites/CalculatorTestSuite-iOS.xml
+  The first run takes a few minutes: Appium builds WebDriverAgent onto the simulator.
+-->
+<suite name="CalculatorTest-iOS">
+    <listeners>
+        <listener class-name="com.mobile.automation.ui.selenium.TestListener" />
+    </listeners>
+
+    <test name="CalculatorTest-iOS" preserve-order="true">
+        <!-- Read by BaseTestSuite: iOS session and iOS page objects -->
+        <parameter name="platform" value="iOS" />
+        <classes>
+            <class name="com.mobile.automation.tests.CalculatorTest" />
+        </classes>
+    </test>
+</suite>

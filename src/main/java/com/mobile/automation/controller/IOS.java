@@ -1,18 +1,19 @@
 package com.mobile.automation.controller;
 
 import com.mobile.automation.pagehelpermethods.Calculator;
+import com.mobile.automation.pagehelpermethods.ios.CalculatorPage;
 
 import io.appium.java_client.AppiumDriver;
 
 /**
- * iOS implementation of {@link Platform}.
+ * iOS implementation of {@link Platform}: hands out the iOS page objects.
  *
- * Prepared, not implemented yet: the iOS session can be started from
- * resources/config/ios.properties, but there is no iOS page object so far.
+ * Used when the suite's platform parameter is "iOS" (CalculatorTestSuite-iOS.xml).
+ * The session comes from resources/config/ios.properties. Not run yet: iOS needs a Mac.
  */
 public class IOS implements Platform {
 
-	// Session started by DriverFactory.getIosInstance(); used once iOS page objects exist
+	// Session started by DriverFactory.getIosInstance()
 	private final AppiumDriver driver;
 
 	/**
@@ -23,13 +24,11 @@ public class IOS implements Platform {
 	}
 
 	/**
-	 * No iOS calculator page object yet, so there is nothing to return.
-	 *
-	 * @return null until an iOS page object exists
+	 * A new page object per call, so its elements are looked up on the current screen.
 	 */
 	@Override
 	public Calculator getCalculatorPage() {
-		return null;
+		return new CalculatorPage(driver);
 	}
 
 }
