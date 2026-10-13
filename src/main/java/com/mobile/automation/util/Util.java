@@ -16,7 +16,6 @@ import java.util.Locale;
 import org.apache.logging.log4j.Logger;
 
 import com.github.javafaker.Faker;
-import com.mobile.automation.ui.selenium.Constants;
 import com.mobile.automation.ui.selenium.DriverActions;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
@@ -190,16 +189,6 @@ public class Util {
         return sb.toString();
     }
 
-    /**
-     * GetRandom Email Address.
-     *
-     * @param emailAccount the email account. Example : {@link TafWebAppConstants#GMAIL_EMAIL_USER_NAME
-     * @return the string
-     */
-    public static String generateUniqueEmail() {
-    	String email = Constants.GMAIL_EMAIL_USER_NAME.replace("@gmail.com", "+"  + getUniqueName() + "@gmail.com");
-    	return email;
-    }
     
     /**
      * GetRandom Email Address.
