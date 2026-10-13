@@ -600,8 +600,8 @@ public class TestListener extends TestListenerAdapter implements IAnnotationTran
         Iterator<ITestResult> skippedTC = context.getSkippedTests().getAllResults().iterator();
         while (skippedTC.hasNext()) {
             ITestResult skipped = skippedTC.next();
-            ITestNGMethod skippedMethod = skipped.getMethod();
-            if (context.getSkippedTests().getResults(skippedMethod).size() > 0) {
+            // Only the earlier attempts of this same test; a test skipped on purpose stays skipped
+            if (skipped.getMethod().equals(iResult.getMethod())) {
                 logger.info("Removing skipped entry for test case: " + skipped.getName());
                 skippedTC.remove();
             }

@@ -74,6 +74,19 @@ Reports and logs:
 
 A failed test is retried once (`RetryFailedTests`); only the final attempt counts.
 
+## Report demo (a failure and a skip on purpose)
+
+`ReportDemoTest` has one test that fails on purpose (2 + 4 checked against 7) and one that is
+skipped on purpose (`SkipException`). They run only in their own suite, so the normal suite stays green:
+
+```
+mvn test -Dsurefire.suiteXmlFiles=resources/suites/ReportDemoSuite.xml
+```
+
+Expected: `Tests run: 3, Failures: 1, Errors: 0, Skipped: 1` and BUILD FAILURE. The failed test is
+retried once first. Then open `target/surefire-reports/custom-emailable-report.html` (pie chart
+1 / 1 / 1, the failure with screenshot and stack trace) and `resources/screenshots/failOnPurpose.png`.
+
 ## Known limitations (next steps)
 
 - iOS: capabilities are ready in `ios.properties`, but there is no iOS app or page object yet (`IOS.getCalculatorPage()` returns null).

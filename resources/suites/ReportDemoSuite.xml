@@ -1,0 +1,26 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<!--
+  Report demo: one passing, one failing and one skipped test, to show every result
+  type in the reports. The failure and the skip are ON PURPOSE (see ReportDemoTest),
+  so this suite always ends with BUILD FAILURE. Not for CI.
+
+  Run (Appium server and the device from android.properties running):
+    mvn test -Dsurefire.suiteXmlFiles=resources/suites/ReportDemoSuite.xml
+  Expected Maven summary: Tests run: 3, Failures: 1, Errors: 0, Skipped: 1
+  (the "in TestSuite" line shows 4 / 2 skipped: it also counts the retried first attempt)
+-->
+<suite name="ReportDemo">
+    <listeners>
+        <listener class-name="com.mobile.automation.ui.selenium.TestListener" />
+    </listeners>
+
+    <test name="ReportDemo" preserve-order="true">
+        <parameter name="platform" value="Android" />
+        <classes>
+            <!-- passes -->
+            <class name="com.mobile.automation.tests.CalculatorTest" />
+            <!-- fails once, is retried, fails again; then a skip -->
+            <class name="com.mobile.automation.tests.ReportDemoTest" />
+        </classes>
+    </test>
+</suite>
