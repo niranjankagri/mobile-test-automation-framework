@@ -30,6 +30,10 @@ import com.mobile.automation.ui.selenium.BaseTestSuite;
  */
 public class ReportDemoTest extends BaseTestSuite {
 
+	/**
+	 * Fails on purpose: same steps as CalculatorTest, but expects 7.
+	 * Shows a failure with screenshot, retry and stack trace in the reports.
+	 */
 	@Test(description = "Fails on purpose: 2 + 4 is checked against 7 to show a failure in the reports")
 	public void failOnPurpose() throws Exception {
 		// Same steps as the real calculator test, so the screenshot shows a real screen
@@ -43,6 +47,9 @@ public class ReportDemoTest extends BaseTestSuite {
 		assertEquals(app.getCalculatorPage().getResults(), "7", "demo failure, 2 + 4 checked against 7");
 	}
 
+	/**
+	 * Skipped on purpose: shows a skipped test and its reason in the reports.
+	 */
 	@Test(description = "Skipped on purpose: shows how a skipped test and its reason appear in the reports")
 	public void skipOnPurpose() {
 		// SkipException marks the test as skipped (not failed) and its message becomes the reason.

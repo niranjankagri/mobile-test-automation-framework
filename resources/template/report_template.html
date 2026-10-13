@@ -1,11 +1,26 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!--
+  Template of the custom emailable report. TestListener.generateReport() reads this file,
+  replaces the placeholders and writes target/surefire-reports/custom-emailable-report.html.
+
+  Placeholders (filled by TestListener):
+    $SUITE_START_TIME$, $START_TIME$, $END_TIME$, $EXECUTION_TIME$   dashboard times
+    $USERNAME$, $OS$, $JAVA-VERSION$, $HOST-NAME$                     environment table
+    $TOTAL_TEST$, $TOTAL_PASSED$, $TOTAL_SKIPPED$, $TOTAL_FAILED$     totals and pie chart
+    $SUITE-ANALYSIS$   table: one row per test class (counts, platform, time)
+    $TEST_ANALYSIS$    left menu: one entry per test class with a pass/fail badge
+    METHOD_ANALYSIS    right side: per class, one row per test method; failures with
+                       screenshot (click to enlarge) and stack trace
+
+  Two views, switched in the top menu: "Test Details" (dashboard + pie chart + class table)
+  and "Analysis" (per-class method results). Styles and the pie chart come from CDNs, so
+  the report needs internet access to look right.
+-->
 <html xmlns="http://www.w3.org/1999/xhtml">
    <head>
-      <meta http-equiv="content-type" content="application/xhtml+xml; charset=gbk" />
-      <title>Trepp Test Automation Report</title>
+      <meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
+      <title>Mobile Test Automation Report</title>
       <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600' rel='stylesheet' type='text/css'>
-      <link href='https://cdn.rawgit.com/anshooarora/extentreports/6032d73243ba4fe4fb8769eb9c315d4fdf16fe68/cdn/extent.css' type='text/css' rel='stylesheet' />
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
       <!-- jQuery library -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -16,7 +31,7 @@
    <body>
       <nav>
          <div class='logo-container darken-2' style='width: 50% !important; text-align: left !important;'>
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;Trepp Test Automation Report</span>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;Mobile Test Automation Report</span>
             <a href='#' data-activates='slide-out' class='button-collapse hide-on-large-only'><i class='mdi-navigation-apps'></i></a>
          </div>
          <ul id='slide-out' class='side-nav fixed hide-on-med-and-down'>
@@ -36,7 +51,7 @@
             </li>
          </ul>
       </nav>
-      <div class='' tyle="margin-top:20px">
+      <div class='' style="margin-top:20px">
          <!-- dashboard -->
          <div id='dashboard-view'>
             <div class='system-view'>
@@ -101,6 +116,7 @@
                </div>
             </div>
             <!-- /dashboard -->
+            <!-- Pie chart drawn by drawChart() below from the $TOTAL_...$ numbers -->
             <div id="piechart_3d" style="margin-left:200px; width: 80%; height: 500px;"></div>
             $SUITE-ANALYSIS$
          </div>
