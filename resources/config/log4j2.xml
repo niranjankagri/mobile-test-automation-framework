@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
+        </Console>
+        <File name="FileAppender" fileName="target/taf-default.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
+        </File>
+        <Routing name="RoutingAppender">
+            <Routes pattern="$${ctx:RoutingKey}">
+                <Route key="firefox">
+                    <File name="$${ctx:RoutingKey}-DefaultAppender" fileName="target/${ctx:RoutingKey}-default.log">
+                        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
+                    </File>
+                </Route>
+                <Route key="chrome">
+                    <File name="$${ctx:RoutingKey}-DefaultAppender" fileName="target/${ctx:RoutingKey}-default.log">
+                        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
+                    </File>
+                </Route>
+                <Route key="ie">
+                    <File name="$${ctx:RoutingKey}-DefaultAppender" fileName="target/${ctx:RoutingKey}-default.log">
+                        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
+                    </File>
+                </Route>
+                <Route key="edge">
+                    <File name="$${ctx:RoutingKey}-DefaultAppender" fileName="target/${ctx:RoutingKey}-default.log">
+                        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%T:%t] ctx=%X{RoutingKey} %-5level %logger{-2} - %msg%n" />
+                    </File>
+                </Route>
+            </Routes>
+        </Routing>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="ConsoleAppender" />
+            <AppenderRef ref="FileAppender" />
+        </Root>
+        <Logger name="com.example" level="DEBUG">
+            <AppenderRef ref="RoutingAppender" />
+        </Logger>
+        <Logger name="com.example.androidui" level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender" />
+            <AppenderRef ref="FileAppender" />
+        </Logger>
+    </Loggers>
+</Configuration>

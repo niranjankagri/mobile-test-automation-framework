@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="CalculatorTest">
+    <listeners>
+        <listener class-name="com.mobile.automation.ui.selenium.TestListener" />
+    </listeners>
+    
+    <test name="CalculatorTest" preserve-order="true">
+    <parameter name="platform" value="Android" />
+        <classes>
+			<class name="com.mobile.automation.tests.CalculatorTest" />
+		</classes>
+    </test>
+</suite>

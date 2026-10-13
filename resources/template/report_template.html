@@ -1,0 +1,216 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="content-type" content="application/xhtml+xml; charset=gbk" />
+      <title>Trepp Test Automation Report</title>
+      <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600' rel='stylesheet' type='text/css'>
+      <link href='https://cdn.rawgit.com/anshooarora/extentreports/6032d73243ba4fe4fb8769eb9c315d4fdf16fe68/cdn/extent.css' type='text/css' rel='stylesheet' />
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <!-- jQuery library -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <!-- Latest compiled JavaScript -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+   </head>
+   <body>
+      <nav>
+         <div class='logo-container darken-2' style='width: 50% !important; text-align: left !important;'>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;Trepp Test Automation Report</span>
+            <a href='#' data-activates='slide-out' class='button-collapse hide-on-large-only'><i class='mdi-navigation-apps'></i></a>
+         </div>
+         <ul id='slide-out' class='side-nav fixed hide-on-med-and-down'>
+            <li class='analysis waves-effect active'>
+				<a href='#!' class='test-view' onclick="showHideView(0)"><i class='mdi-action-dashboard'></i>Test Details</a>
+			</li>
+            <li class='analysis waves-effect'>
+               <a href='#!' onclick="showHideView(1)" class='dashboard-view'><i class='mdi-action-track-changes'></i></i>Analysis</a>
+            </li>
+         </ul>
+         <ul class='right hide-on-med-and-down nav-right'>
+            <li class='theme-selector' alt='Click to toggle dark theme. To enable by default, use js configuration $("body").addClass("dark");' title='Click to toggle dark theme. To enable by default, use js configuration $("body").addClass("dark");'>
+               <i class='mdi-hardware-desktop-windows'></i>
+            </li>
+            <li>
+               <span class='suite-started-time'>$SUITE_START_TIME$</span>
+            </li>
+         </ul>
+      </nav>
+      <div class='' tyle="margin-top:20px">
+         <!-- dashboard -->
+         <div id='dashboard-view'>
+            <div class='system-view'>
+               <div class='col l6 m12 s12'>
+                  <div id='dashboard-view' class='row'>
+                     <div class='col l2 m4 s6'>
+                        <div class='card suite-total-tests'>
+                           <span class='panel-name'>Total Tests</span>
+                           <span class='total-tests'> <span class='panel-lead'>$TOTAL_TEST$</span> </span>
+                        </div>
+                     </div>
+                     <div class='col l2 m4 s12'>
+                        <div class='card suite-total-time-overall'>
+                           <span class='panel-name'>Total Time Taken (Overall)</span>
+                           <span class='suite-total-time-overall-value panel-lead'>$EXECUTION_TIME$</span>
+                        </div>
+                     </div>
+                     <div class='col l2 m4 s6 suite-start-time'>
+                        <div class='card accent green-accent'>
+                           <span class='panel-name'>Start</span>
+                           <span class='panel-lead suite-started-time'>$START_TIME$</span>
+                        </div>
+                     </div>
+                     <div class='col l2 m4 s6 suite-end-time'>
+                        <div class='card accent pink-accent'>
+                           <span class='panel-name'>End</span>
+                           <span class='panel-lead suite-ended-time'>$END_TIME$</span>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class='col l6 m12 s12'>
+                  <div class='card-panel'>
+                     <span class='label info outline left'>Environment</span>
+                     <table>
+                        <thead>
+                           <tr>
+                              <th style='text-align: center;'>Param</th>
+                              <th style='text-align: center;'>Value</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                              <td style='text-align: center;'>User Name</td>
+                              <td style='text-align: center;'>$USERNAME$</td>
+                           </tr>
+                           <tr>
+                              <td style='text-align: center;'>OS</td>
+                              <td style='text-align: center;'>$OS$</td>
+                           </tr>
+                           <tr>
+                              <td style='text-align: center;'>Java Version</td>
+                              <td style='text-align: center;'>$JAVA-VERSION$</td>
+                           </tr>
+                           <tr>
+                              <td style='text-align: center;'>Host Name</td>
+                              <td style='text-align: center;'>$HOST-NAME$</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+            <!-- /dashboard -->
+            <div id="piechart_3d" style="margin-left:200px; width: 80%; height: 500px;"></div>
+            $SUITE-ANALYSIS$
+         </div>
+         <section class="test-data" id='test-view'  style='display: none'>
+            <div class="container-fluid">
+			 <div class='card-panel heading'>
+                     <h5>Test Analysis</h5>
+                  </div>
+               <div class="row">
+                  <div class="col-md-4">
+                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        $TEST_ANALYSIS$
+                     </div>
+                  </div>
+                  <div class="col-md-8">
+                     <div class="tab-content" id="v-pills-tabContent">
+                        METHOD_ANALYSIS
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+      </div>
+	  <div id="modal01" class="w3-modal" onclick="this.style.display='none'">
+		<span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span>
+		<div class="w3-modal-content w3-animate-zoom">
+			<img id="img01" style="width:100%">
+		</div>
+	  </div>
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+      <script>
+		function onClick(element) {
+		  document.getElementById("img01").src = element.src;
+		  document.getElementById("modal01").style.display = "block";
+		}
+	  </script>
+	  <script type="text/javascript">
+         google.charts.load("current", {
+             packages: ["corechart"]
+         });
+         google.charts.setOnLoadCallback(drawChart);
+         
+         function drawChart() {
+             var data = google.visualization.arrayToDataTable([
+                 ['Test Result', 'Test Count'],
+                 ['Pass', $TOTAL_PASSED$],
+                 ['Skip', $TOTAL_SKIPPED$],
+                 ['Fail', $TOTAL_FAILED$]
+             ]);
+         
+             var options = {
+                 title: 'Suite Analysis',
+                 is3D: true,
+                 colors: ['#66BB6A', 'yellow', '#f96868'],
+				 pieSliceTextStyle: {
+					color: 'black'
+				 }
+             };
+         
+             var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+             chart.draw(data, options);
+         }
+      </script>
+      <style type="text/css">
+      </style>
+      <script>
+         function showHideView(divId) {
+             var x = document.getElementById('dashboard-view');
+             var y = document.getElementById('test-view');
+             if (divId == 1) {
+			     x.style.display = "none";
+                 y.style.display = "block";
+			 } else {
+                 x.style.display = "block";
+                 y.style.display = "none";
+			 }
+				 document.getElementsByClassName("analysis waves-effect active").item(0).className = "analysis waves-effect";
+		         document.getElementsByClassName("analysis waves-effect").item(divId).className = "analysis waves-effect active";
+         }
+      </script>
+	  <script>
+	  function showHideResults(anchorId) {
+	      document.getElementsByClassName("tab-pane fade show active").item(0).className = "tab-pane fade";
+		  document.getElementsByClassName("tab-pane fade").item(anchorId).className = "tab-pane fade show active";
+	  }
+
+	  function activeMenu() {
+	      document.getElementsByClassName("tab-pane fade show active").item(0).className = "tab-pane fade";
+		  document.getElementsByClassName("tab-pane fade").item(anchorId).className = "tab-pane fade show active";
+	  }
+		
+</script>
+      <style>
+         .system-view, .test-data {
+			padding: 20px 100px;
+		 }
+		 #v-pills-tab {
+			margin-top: 20px;
+         }
+		 .nav-pills .nav-link.active{
+			color: #1d0101;
+			background-color: #f7f7f7;
+		 }
+		 a{
+			color: black;
+		 }
+		 .test-steps, .cat-tests {
+			margin-top: 20px;
+		 }
+      </style>
+   </body>
+</html>

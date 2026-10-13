@@ -1,0 +1,20 @@
+# App under test: download it yourself (see README), it is not redistributed here
+resources/apps/*.apk
+
+# Maven and TestNG output
+target/
+test-output/
+
+# Screenshots and logs written by test runs
+resources/screenshots/
+resources/Screenshots/
+*.log
+
+# IDE and tool files
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+.dbeaver/
