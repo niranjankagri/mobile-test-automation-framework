@@ -219,11 +219,11 @@ public abstract class DriverActions{
 	}
 
 	/**
-	 * Function to execute a JavaScript
+	 * Function to execute a JavaScript that returns a whole number
 	 * Web/hybrid context only.
 	 *
 	 * @param script
-	 * @return long
+	 * @return int the number the script returned, or -1 when it failed
 	 */
 	public int executeJavaScript(String script) {
 		long itemNum = -1;
@@ -444,6 +444,7 @@ public abstract class DriverActions{
 
 	/**
 	 * Scroll to the WebElement
+	 * Web/hybrid context only.
 	 *
 	 * @param element
 	 */
@@ -455,6 +456,7 @@ public abstract class DriverActions{
 
 	/**
 	 * Scroll down
+	 * Web/hybrid context only.
 	 *
 	 * @param element
 	 */
@@ -475,6 +477,7 @@ public abstract class DriverActions{
 
 	/**
 	 * Scrolling element by pixels along x axis.
+	 * Web/hybrid context only.
 	 * 		Positive x means right,
 	 * 		Negative x means left
 	 * 		Positive y means down
@@ -535,7 +538,7 @@ public abstract class DriverActions{
 	/**
 	 * Returns the state of the element, if the element is Enabled or not, using WebElement
 	 *
-	 * @param locator
+	 * @param element
 	 * @return
 	 */
 
@@ -577,7 +580,7 @@ public abstract class DriverActions{
 	/**
 	 * Returns the state of the element, if the element is selected or not, using WebElement
 	 *
-	 * @param locator
+	 * @param element
 	 * @return boolean
 	 */
 
@@ -636,7 +639,8 @@ public abstract class DriverActions{
 	}
 
 	/**
-	 * Check or uncheck checkbox
+	 * Check or uncheck checkbox (reads and clicks it with JavaScript)
+	 * Web/hybrid context only.
 	 *
 	 * @param checkBox, enable
 	 */
@@ -677,7 +681,7 @@ public abstract class DriverActions{
 
 	/**
 	 * private method not for use, internally used within this class
-	 * for getElement, please use {@link #getElement(String) or #getElement(String, int)}
+	 * for getElement, please use {@link #getElement(String)} or {@link #getElement(String, long)}
 	 *
 	 * @param by
 	 * @param timeOut
@@ -704,7 +708,7 @@ public abstract class DriverActions{
 	 * Builds The List of WebElements By given locator strategy
 	 *
 	 * @param locator - locator strategy, id, name=sample, tag=div, link=sample
-	 * @return WebElement
+	 * @return List the elements, or null when none appeared in time
 	 */
 	public List<WebElement> getElements(String locator) {
 		return getElements(locator, DEFAULT_WAIT_TIME);
@@ -756,7 +760,7 @@ public abstract class DriverActions{
 	 * Returns list of Elements by id
 	 *
 	 * @param id
-	 * @return WebElement
+	 * @return List the elements
 	 */
 	public List<WebElement> getElementsById(String id) {
 		List<WebElement> webElements = this.webDriverWait
@@ -874,6 +878,7 @@ public abstract class DriverActions{
 	 *
 	 * @param elem - The element that needs to be selected
 	 * browser - For Edge browser, there's a special way to doubleClick
+	 * (that branch uses JavaScript: Web/hybrid context only)
 	 *
 	 */
 	public void selectElement(WebElement elem, String browser) {
@@ -905,8 +910,9 @@ public abstract class DriverActions{
 
 	/**
 	 * MouseOver using locator
+	 * Web/hybrid context only.
 	 *
-	 * @param elem
+	 * @param locator
 	 */
 	public void mouseOver(String locator) {
 		WebElement element = getElement(locator);
@@ -977,9 +983,9 @@ public abstract class DriverActions{
 	}
 
 	/**
-     * Wait for element to disappear with locator, with a max timeout
+     * Wait for an element to disappear, with a max timeout
      *
-     * @param locator
+     * @param element
      * @param timeOut
      */
     public void waitForElementToDisappear(WebElement element, int timeOut) {
@@ -1064,9 +1070,9 @@ public abstract class DriverActions{
 	}
 
 	/**
-	 * Wait for the Element to be present. This method only checks
-	 * if the Element is present in DOM, does not validate if the Element is visible
-	 * For the Element to be visible use {@link #waitForElementToBeDisplayed(WebElement)}
+	 * Wait for an element object, up to DEFAULT_WAIT_TIME. Like the overload below,
+	 * it waits until the element is visible: an element object (e.g. a page-object
+	 * proxy) can only be checked by using it, and visible also proves present.
 	 *
 	 * @param element
 	 * @return boolean - if the Element was found or not
@@ -1180,7 +1186,8 @@ public abstract class DriverActions{
     }
 
 	/**
-	 * Verify if the element is present
+	 * Checks only that the element object is not null. A page-object proxy is never
+	 * null, so for a real check use {@link #waitForElementPresent(WebElement, long)}.
 	 *
 	 * @param element
 	 * @return
@@ -1298,11 +1305,11 @@ public abstract class DriverActions{
 	}
 
 	/**
-	 * Closes the Browser Pop up window except if the Tile in ignoreWindowTitle
+	 * Closes every other window, except windows whose title contains ignoreWindowTitle
 	 * Web/hybrid context only.
 	 *
-	 * @param windowHandle
-	 * @param ignoreWindow
+	 * @param windowHandle the window to keep and return to
+	 * @param ignoreWindowTitle part of the title of windows to leave open
 	 */
 	public void closeBrowserPopUp(String windowHandle, String ignoreWindowTitle) {
 		Set<String> handles = driver.getWindowHandles();
@@ -1332,6 +1339,7 @@ public abstract class DriverActions{
 
 	/**
 	 * Selection Option By Value
+	 * Web/hybrid context only.
 	 *
 	 * @param locator
 	 * @param optionToSelect
@@ -1344,6 +1352,7 @@ public abstract class DriverActions{
 
 	/**
 	 * Selection Option By Visible Text using locator
+	 * Web/hybrid context only.
 	 *
 	 * @param locator
 	 * @param optionToSelect
@@ -1357,8 +1366,9 @@ public abstract class DriverActions{
 
 	/**
 	 * Selection Option By Visible Text using webelement
+	 * Web/hybrid context only.
 	 *
-	 * @param locator
+	 * @param element
 	 * @param optionToSelect
 	 */
 
@@ -1370,6 +1380,7 @@ public abstract class DriverActions{
 
 	/**
 	 * get Selected drop down value
+	 * Web/hybrid context only.
 	 *
 	 * @param element
 	 * @return
@@ -1381,6 +1392,7 @@ public abstract class DriverActions{
 
 	/**
 	 * Verifies if an option exists
+	 * Web/hybrid context only.
 	 *
 	 * @param element
 	 * @param optionToVerify - String that needs to be verified
@@ -1487,9 +1499,11 @@ public abstract class DriverActions{
 	}
 
 	/**
-	 * Scroll for element present
+	 * Scroll for element present (scrolls with JavaScript)
+	 * Web/hybrid context only.
 	 *
-	 * @param locator
+	 * @param locator       the element to look for
+	 * @param scrollLocator the scrollable container
 	 */
 	public void scrollForElementPresent(String locator, String scrollLocator) {
 		int count = 0;
