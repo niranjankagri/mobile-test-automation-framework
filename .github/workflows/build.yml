@@ -1,0 +1,36 @@
+# Compiles the framework and its tests on every push and pull request to main. The suite itself
+# is not run here: it tests Google's Calculator app, whose APK is not in this repository and may
+# not be redistributed, so CI cannot install it on an emulator (see README, Known limitations).
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    name: Compile (JDK 17)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Compile main and test code
+        run: mvn -B test-compile

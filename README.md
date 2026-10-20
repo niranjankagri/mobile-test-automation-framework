@@ -290,6 +290,9 @@ retried test. The reports then look like the screenshots above.
 
 ## Known limitations
 
+- **CI compiles, it does not run the suite:** the tests need Google's Calculator APK, which is not in
+  the repository and may not be redistributed, so GitHub Actions (`.github/workflows/build.yml`) only
+  compiles the framework and the tests. The Android suite runs locally on an emulator.
 - **iOS has not been run yet** (it needs a Mac). Session settings, page objects and suite are in place;
   the iOS locators are examples to check with Appium Inspector.
 - **One session at a time:** the driver and `app` are static in `BaseTestSuite`, so classes cannot run in
