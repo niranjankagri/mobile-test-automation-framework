@@ -26,6 +26,7 @@ but has not been run yet (iOS automation needs a Mac); its locators are examples
 - [Report demo: a failure and a skip on purpose](#report-demo-a-failure-and-a-skip-on-purpose)
 - [Adding a screen or a test](#adding-a-screen-or-a-test)
 - [Known limitations](#known-limitations)
+- [License](#license)
 
 ## Stack
 
@@ -292,7 +293,8 @@ retried test. The reports then look like the screenshots above.
 
 - **CI compiles, it does not run the suite:** the tests need Google's Calculator APK, which is not in
   the repository and may not be redistributed, so GitHub Actions (`.github/workflows/build.yml`) only
-  compiles the framework and the tests. The Android suite runs locally on an emulator.
+  compiles the framework and the tests. The Android suite runs locally on an emulator. `main` is
+  protected by a ruleset: every change goes through a pull request, and the compile job must pass first.
 - **iOS has not been run yet** (it needs a Mac). Session settings, page objects and suite are in place;
   the iOS locators are examples to check with Appium Inspector.
 - **One session at a time:** the driver and `app` are static in `BaseTestSuite`, so classes cannot run in
@@ -302,3 +304,7 @@ retried test. The reports then look like the screenshots above.
   and work only inside a web view.
 - **Report styling** loads Bootstrap, w3.css and Google Charts from CDNs, so the custom report needs
   internet access to look right.
+
+## License
+
+[MIT](LICENSE)
