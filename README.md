@@ -295,6 +295,8 @@ retried test. The reports then look like the screenshots above.
   the repository and may not be redistributed, so GitHub Actions (`.github/workflows/build.yml`) only
   compiles the framework and the tests. The Android suite runs locally on an emulator. `main` is
   protected by a ruleset: every change goes through a pull request, and the compile job must pass first.
+  The compile job also runs every Sunday at 23:45 UTC, and Dependabot proposes dependency and
+  GitHub Actions updates once a month (minor and patch grouped, major versions separately).
 - **iOS has not been run yet** (it needs a Mac). Session settings, page objects and suite are in place;
   the iOS locators are examples to check with Appium Inspector.
 - **One session at a time:** the driver and `app` are static in `BaseTestSuite`, so classes cannot run in

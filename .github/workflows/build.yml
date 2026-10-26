@@ -8,10 +8,15 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    # Weekly, without a code change: a broken dependency or a change outside the repository
+    # shows up within a week (night in India, before the daily Quality Intelligence collection)
+    - cron: '45 23 * * 0'   # Sunday 23:45 UTC
   workflow_dispatch:
 
+# Grouped per event too, so the weekly run and a push run on main never cancel each other
 concurrency:
-  group: build-${{ github.ref }}
+  group: build-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 permissions:
