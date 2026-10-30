@@ -83,6 +83,10 @@ src/test/java/com/mobile/automation/tests/
 docs/images/                  report screenshots used below
 ```
 
+## Test case
+
+The test starts with its case ID (`tc101_testCal`, description `[TC-101] 2 + 4 = shows 6`); the case is written out for a manual run in [docs/manual-test-cases.md](docs/manual-test-cases.md).
+
 ## How a test run works
 
 The same test class runs on both platforms. Only one value in the suite file differs:
@@ -116,7 +120,7 @@ BaseTestSuite  (every test class extends it)
                  start one Extent entry for this test class
    |
    v
-CalculatorTest.testCal()
+CalculatorTest.tc101_testCal()
    app.getCalculatorPage()  -> Android: android.CalculatorPage | iOS: ios.CalculatorPage  (both are a Calculator)
      .clickOnDigitTwo() / .clickOnAdd() / .clickOnDigitFour() / .clickOnEquals()
           -> DriverActions.clickElement(): wait until visible, click, log; one retry if the screen redrew

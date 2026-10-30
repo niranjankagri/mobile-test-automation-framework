@@ -16,8 +16,8 @@ public class CalculatorTest extends BaseTestSuite {
 	 * Adds 2 and 4 with the calculator keys and checks that the result field shows 6.
 	 * Runs on Android (CalculatorTestSuite.xml) and on iOS (CalculatorTestSuite-iOS.xml).
 	 */
-	@Test(description = "2 + 4 = shows 6")
-	public void testCal() throws Exception {
+	@Test(description = "[TC-101] 2 + 4 = shows 6")
+	public void tc101_testCal() throws Exception {
 		// Enter the sum key by key, as a user would
 		app.getCalculatorPage().clickOnDigitTwo();
 		app.getCalculatorPage().clickOnAdd();
